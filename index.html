@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FrostWing Wiki</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header id="bar">
+  <button id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="drawer"></button>
+  <a class="brand" href="#/"><span class="ic" data-i="snow"></span> FrostWing<span class="dim"> /wiki</span></a>
+  <span id="path"></span>
+</header>
+
+<div id="scrim"></div>
+<aside id="drawer" aria-label="Menu" aria-hidden="true">
+  <div class="dh"><span class="ic" data-i="snow"></span><span>FrostWing</span><button id="close" type="button" aria-label="Close menu"></button></div>
+  <nav class="dn" id="dn"></nav>
+</aside>
+
+<main>
+  <div id="page"></div>
+  <div id="shell" hidden>
+    <div id="out"></div>
+    <label class="prompt"><span class="ps" id="ps1"></span>
+      <input id="cmd" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="wiki shell">
+    </label>
+  </div>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

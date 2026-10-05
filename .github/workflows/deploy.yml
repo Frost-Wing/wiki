@@ -1,0 +1,74 @@
+name: Deploy wiki
+
+on:
+  push:
+    branches: [main]          # change to master if that's your default branch
+  workflow_dispatch:          # lets you run it by hand from the Actions tab
+
+# permissions GitHub Pages deployment needs
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# one deploy at a time; a newer push replaces a queued one
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  # folder that contains index.html, style.css, app.js, pages/ ...
+  # "." if the wiki is the repo root, or e.g. "frostwing-wiki" if it lives in a subfolder
+  SITE_DIR: .
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check the wiki
+        working-directory: ${{ env.SITE_DIR }}
+        run: |
+          node --check app.js
+          node -e "JSON.parse(require('fs').readFileSync('pages/manifest.json','utf8'))"
+          missing=0
+          for p in $(node -p "require('./pages/manifest.json').join(' ')"); do
+            if [ ! -f "pages/$p.md" ]; then
+              echo "::error file=pages/manifest.json::pages/$p.md is listed in manifest.json but does not exist"
+              missing=1
+            fi
+          done
+          exit $missing
+
+      - name: Collect site files
+        working-directory: ${{ env.SITE_DIR }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/_site"
+          cp index.html style.css app.js "$RUNNER_TEMP/_site/"
+          [ -f figlet.txt ] && cp figlet.txt "$RUNNER_TEMP/_site/"
+          for d in pages fonts images; do
+            [ -d "$d" ] && cp -r "$d" "$RUNNER_TEMP/_site/"
+          done
+          touch "$RUNNER_TEMP/_site/.nojekyll"
+          find "$RUNNER_TEMP/_site" -type f | sort
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ runner.temp }}/_site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
