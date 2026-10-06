@@ -206,11 +206,17 @@ const clockText = () => {
   return `${z(d.getHours())}:${z(d.getMinutes())}:${z(d.getSeconds())} ${z(d.getDate())}/${z(d.getMonth() + 1)}/${d.getFullYear()}`;
 };
 
-function navTree(cls) {
+const navTitle = (t, split) => {
+  const m = split && t.match(/^(.*?)\s*(\(.*\))\s*$/);
+  return m && m[1] ? `${esc(m[1])}<br>${esc(m[2])}` : esc(t);
+};
+
+function navTree(cls, side) {
   return GROUPS.map(g => `<div class="gh"><span class="dim">└─</span> <span class="ic">${I.folder}</span>${esc(g)}</div>` +
     PAGES.filter(p => p.group === g).map(p =>
-      `<a href="#/${p.slug}" data-slug="${p.slug}"><span class="tr">   └─ </span><span class="ic ${cls || 'p'}">${p.icon}</span> ${esc(p.title)}${p.desc ? `<span class="dim"> - ${esc(p.desc)}</span>` : ''}</a>`).join('')).join('');
+      `<a${side ? ' class="side"' : ''} href="#/${p.slug}" data-slug="${p.slug}"><span class="tr">   └─ </span><span class="ic ${cls || 'p'}">${p.icon}</span>${side ? `<span class="nt">${navTitle(p.title, true)}</span>` : ' ' + esc(p.title)}</a>`).join('')).join('');
 }
+
 function homeHTML() {
   return `<pre class="figlet">${esc(FIG)}</pre>
 <p class="lead"><span class="g">Welcome to FrostWing wiki!</span> <span class="w">This is the documentation for the</span> <span class="p">FrostWing</span> <span class="w">operating system.</span></p>
@@ -378,7 +384,7 @@ cmd.addEventListener('keydown', e => {
 $('#shell').addEventListener('click', e => { if (!e.target.closest('a')) cmd.focus(); });
 
 loadAll().then(() => {
-  dn.innerHTML = `<a href="#/" data-slug=""><span class="ic g">${I.home}</span> Home</a>` + navTree('p');
+  dn.innerHTML = `<a href="#/" data-slug=""><span class="ic g">${I.home}</span> Home</a>` + navTree('p', true);
   route();
 }).catch(err => {
   const file = location.protocol === 'file:';
