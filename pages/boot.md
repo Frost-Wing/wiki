@@ -19,4 +19,4 @@ A healthy boot, copied from the console. The `log` highlighter understands the t
 ```
 
 > [!warn] not cleanly unmounted
-> If `e2fsck` is nagging you, the previous run did not shut down the disk properly.
+> If `e2fsck` message is nagging you, the previous run did not shut down the disk properly.

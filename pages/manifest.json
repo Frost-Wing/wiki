@@ -1,7 +1,7 @@
 [
     "compiling",
     "doxygen",
-    "installing",
+    "rootfs",
     "boot",
     "requirements",
     "filesystems",

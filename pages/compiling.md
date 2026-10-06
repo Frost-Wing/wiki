@@ -113,6 +113,12 @@ make everything
 
 ---
 
+> [!NOTE]
+> Main rootdisk is NOT built and OS will not run in QEMU VM,
+> but will run fine in an real machine without rootdisk.
+>
+> Refer Next Article for building `disk.img` and installing rootfs to a disk.
+
 ### Now you can scream *"I use FrostWing btw"*
 
 ![Scream](https://raw.githubusercontent.com/Frost-Wing/wiki/f1d49dd809aabd8d5ae3b35a71ee5fb2a04c7a0f/pics/i-use-fw-btw.png)
