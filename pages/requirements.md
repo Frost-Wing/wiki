@@ -12,9 +12,17 @@ desc: Find out system requirements
 
 ## Bare Minimum
 
+### For BIOS
 | Device | Amount |
 | --- | --- |
-| `RAM` | xMB |
+| `RAM` | 200MB |
+| `Storage` | None |
+| `Networking` | None |
+
+### For UEFI
+| Device | Amount |
+| --- | --- |
+| `RAM` | 300MB |
 | `Storage` | None |
 | `Networking` | None |
 
