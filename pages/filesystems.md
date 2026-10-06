@@ -33,5 +33,5 @@ Following drives the OS will support and map cleanly;
 |---|---| --- |
 | SATA | diskNpM | `disk1p1` |
 | SATAPI | diskNpM | `disk0p1` |
-| NVME | nvme0n1p1 | -- |
+| NVME | nvmeXnNpM | `nvme0n1p1` |
 | USB (Mass Storage) | usbNpM | `usb0p1` |
