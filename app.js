@@ -183,6 +183,22 @@ function md(src) {
   return out.join('\n');
 }
 
+/* ── last commit ── */
+const REPO = 'Frost-Wing/wiki'; // <- your repo
+let LAST = '';
+const dayStart = t => { const x = new Date(t); return new Date(x.getFullYear(), x.getMonth(), x.getDate()); };
+const ago = iso => {
+  const d = Math.round((dayStart(Date.now()) - dayStart(iso)) / 864e5);
+  return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d + ' days ago';
+};
+async function loadCommit() {
+  try {
+    const r = await fetch(`https://api.github.com/repos/${REPO}/commits?per_page=1`);
+    if (!r.ok) throw 0;
+    LAST = ago((await r.json())[0].commit.committer.date);
+  } catch { LAST = 'unknown'; }
+}
+
 /* ── pages ── */
 let PAGES = [], GROUPS = [], FIG = '';
 function parsePage(slug, text) {
@@ -198,6 +214,7 @@ async function loadAll() {
   PAGES = names.map((n, i) => parsePage(n, texts[i]));
   GROUPS = [...new Set(PAGES.map(p => p.group))];
   FIG = (await get('figlet.txt').catch(() => '')).replace(/\n+$/, '');
+  await loadCommit();
 }
 
 const ps1 = path => `<span class="w">[</span><span class="g">0</span><span class="w">]</span> <span class="w">${esc(path)}</span> <span class="w">@</span> <span class="r">root</span> <span class="w">$</span>`;
@@ -223,6 +240,7 @@ function homeHTML() {
 <div class="kv"><span class="w">Github  </span><span class="w">:</span> <a href="https://github.com/Frost-Wing" target="_blank" rel="noopener noreferrer">https://github.com/Frost-Wing</a>
 <span class="w">Pages   </span><span class="w">:</span> <span class="p">${PAGES.length}</span>
 <span class="w">Time    </span><span class="w">:</span> <span class="w" id="clock">${clockText()}</span></div>
+<span class="w">Commit  &nbsp</span><span class="w">:</span> <span class="g">${esc(LAST)}</span> <br>
 Open the <span class="g">${I.bars}</span> menu in the top-left, pick a page below, or type <span class="g">help</span> at the prompt.</p>
 <h2><span class="dim">└─</span> <span class="ic">${I.right}</span>Navigation</h2>
 <div class="nav">${navTree()}</div>
