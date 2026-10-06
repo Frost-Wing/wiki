@@ -383,6 +383,52 @@ cmd.addEventListener('keydown', e => {
 });
 $('#shell').addEventListener('click', e => { if (!e.target.closest('a')) cmd.focus(); });
 
+/* ── pixel noise cursor (mouse devices only) ── */
+(() => {
+  const mq = matchMedia('(hover:hover) and (pointer:fine)');
+  if (!mq.matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cv = $('#pix'); if (!cv) return;
+  const ctx = cv.getContext('2d');
+  const CELL = 8, RADIUS = 56, DECAY = 0.025;
+  const COLORS = ['180,140,245', '180,140,245', '78,240,122', '255,255,255']; // purple x2, green, white
+  const cells = new Map(); // "cx,cy" -> {x, y, a, c}
+  let raf = 0, mx = -1, my = -1;
+
+  const resize = () => { cv.width = innerWidth; cv.height = innerHeight; };
+  resize(); addEventListener('resize', resize);
+
+  addEventListener('mousemove', e => {
+    const px = e.clientX, py = e.clientY;
+    const x0 = Math.floor((px - RADIUS) / CELL), x1 = Math.floor((px + RADIUS) / CELL);
+    const y0 = Math.floor((py - RADIUS) / CELL), y1 = Math.floor((py + RADIUS) / CELL);
+    for (let cx = x0; cx <= x1; cx++) for (let cy = y0; cy <= y1; cy++) {
+      const dx = cx * CELL + CELL / 2 - px, dy = cy * CELL + CELL / 2 - py;
+      const d = Math.hypot(dx, dy); if (d > RADIUS) continue;
+      const f = 1 - d / RADIUS;                    // 1 at the cursor, 0 at the edge
+      if (Math.random() > f * f * 0.55) continue;  // sparse noise, denser near cursor
+      const k = cx + ',' + cy;
+      const a = (0.25 + Math.random() * 0.6) * (0.4 + f * 0.6);
+      const prev = cells.get(k);
+      if (prev) prev.a = Math.max(prev.a, a);
+      else cells.set(k, { x: cx * CELL, y: cy * CELL, a, c: COLORS[(Math.random() * COLORS.length) | 0] });
+    }
+    if (!raf) raf = requestAnimationFrame(tick);
+  }, { passive: true });
+
+  document.addEventListener('mouseleave', () => { for (const c of cells.values()) c.a = Math.min(c.a, 0.3); });
+
+  function tick() {
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    for (const [k, c] of cells) {
+      c.a -= DECAY;
+      if (c.a <= 0.02) { cells.delete(k); continue; }
+      ctx.fillStyle = `rgba(${c.c},${c.a.toFixed(3)})`;
+      ctx.fillRect(c.x, c.y, CELL - 1, CELL - 1); // 1px gap gives a pixel-grid look
+    }
+    raf = cells.size ? requestAnimationFrame(tick) : 0; // loop sleeps when idle
+  }
+})();
+
 loadAll().then(() => {
   dn.innerHTML = `<a href="#/" data-slug=""><span class="ic g">${I.home}</span> Home</a>` + navTree('p', true);
   route();
