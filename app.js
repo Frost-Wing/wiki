@@ -184,7 +184,7 @@ function md(src) {
 }
 
 /* ── last commit ── */
-const REPO = 'Frost-Wing/wiki'; // <- your repo
+const REPO = 'Frost-Wing/wiki';
 let LAST = '';
 const dayStart = t => { const x = new Date(t); return new Date(x.getFullYear(), x.getMonth(), x.getDate()); };
 const ago = iso => {
