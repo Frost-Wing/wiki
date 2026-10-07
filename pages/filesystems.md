@@ -35,3 +35,11 @@ Following drives the OS will support and map cleanly;
 | SATAPI | diskNpM | `disk0p1` |
 | NVME | nvmeXnNpM | `nvme0n1p1` |
 | USB (Mass Storage) | usbNpM | `usb0p1` |
+
+## Supported Host Controller Interfaces
+
+| Name | Use |
+|---|---|
+| `AHCI` | SATA & SATAPI |
+| `XHCI` | USB 3.x |
+| `EHCI` | USB 2.0 |

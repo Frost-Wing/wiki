@@ -121,4 +121,4 @@ make everything
 
 ### Now you can scream *"I use FrostWing btw"*
 
-![Scream](https://raw.githubusercontent.com/Frost-Wing/wiki/f1d49dd809aabd8d5ae3b35a71ee5fb2a04c7a0f/pics/i-use-fw-btw.png)
+![I use FrostWing btw](https://raw.githubusercontent.com/Frost-Wing/wiki/f1d49dd809aabd8d5ae3b35a71ee5fb2a04c7a0f/pics/i-use-fw-btw.png)
